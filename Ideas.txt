@@ -1,0 +1,7 @@
+
+
+# Implementar y testear advanced visuals con la API Trading View (gráfico de velas japonesas con capacity, tendency lines
+ y volumen.)
+
+
+
