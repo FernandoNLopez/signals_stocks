@@ -2,8 +2,11 @@
 
 import React from 'react';
 import {useForm} from "react-hook-form";
+import {useRouter} from "next/navigation";
+import {toast} from "sonner";
 
 import {INVESTMENT_GOALS, PREFERRED_INDUSTRIES, RISK_TOLERANCE_OPTIONS} from "@/lib/constants";
+import {signUpWithEmail} from "@/lib/actions/auth.actions";
 
 import {Button} from "@/components/ui/button";
 import InputField from "@/components/forms/InputField";
@@ -14,10 +17,9 @@ import FooterLink from "@/components/forms/FooterLink";
 
 
 
-
-
-
 const SignUp = () => {
+
+    const router = useRouter();
 
     const {
         register,
@@ -36,11 +38,19 @@ const SignUp = () => {
        }, mode: 'onBlur'
     }, );
 
+    //Submit the SignUp
     const onSubmit = async (data: SignUpFormData) => {
         try {
-            console.log(data);
-        } catch (e) {
-            console.error(e);
+            //SignUp with email server action
+            const result = await signUpWithEmail(data);
+
+            if (result.success) router.push('/');
+
+        } catch (error) {
+            console.error(error);
+            toast.error('Sign up failed',{
+                description: error instanceof Error ? error.message : 'Failed to create an account.'
+            })
         }
     };
 
@@ -65,7 +75,8 @@ const SignUp = () => {
                     <InputField
                         name="email"
                         label="Email"
-                        placeholder="contact@jsmastery.com"
+                        type="email"
+                        placeholder="vainilla@gmail.com"
                         register={register}
                         error={errors.email}
                         validation={{ required: 'Email name is required', pattern: /^\w+@\w+\.\w+$/, message: 'Email address is required' }}

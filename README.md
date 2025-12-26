@@ -8,6 +8,13 @@ npm install react-hook-form
 npm install react-select-country-list
 npm install --save-dev @types/react-select-country-list
 npm install mongodb mongoose
+npm install dotenv
+npm install better-auth
+
+npm uninstall mongodb
+npm install mongodb@^6.18.0
+npm install better-auth
+npm install mongodb@^6.21.0 bson@^6.10.0
 
 
 *components*

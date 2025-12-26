@@ -45,5 +45,7 @@ export const connectToDatabase = async () => {
     }
     //To know when we are on development mode or production
     console.log(`Connected to database... ${process.env.NODE_ENV} | ${MONGODB_URI}`);
+
+    return cached.conn;
 }
 

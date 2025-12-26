@@ -26,7 +26,7 @@ declare global {
         name: string;
         label: string;
         placeholder: string;
-        type?: string;
+        type?: string | email;
         register: UseFormRegister;
         error?: FieldError;
         validation?: RegisterOptions;

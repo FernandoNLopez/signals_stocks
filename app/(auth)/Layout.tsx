@@ -1,10 +1,20 @@
+import React from "react";
 import Link from "next/link";
 import Image from "next/image";
-import React from "react";
+import {headers} from "next/headers";
+
+import {auth} from "@/lib/better-auth/auth";
+import {redirect} from "next/navigation";
+
 
 
 //React.ReactNode represents anything that can be rendered in React
-const Layout = ({ children } : {children : React.ReactNode}) => {
+const Layout = async ({ children } : {children : React.ReactNode}) => {
+
+    /* Check for the existing session */
+    const session = await auth.api.getSession({ headers: await headers() });
+
+    if (session?.user) redirect('/');
 
     return (
         <main className="auth-layout">
