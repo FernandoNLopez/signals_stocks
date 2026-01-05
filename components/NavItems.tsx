@@ -8,7 +8,7 @@ import SearchCommand from "@/components/SearchCommand";
 
 
 
-const NavItems = () => {
+const NavItems = ({initialStocks}:{ initialStocks : StockWithWatchlistStatus[] }) => {
 
     const pathname:string = usePathname();
 
@@ -26,10 +26,9 @@ const NavItems = () => {
                 if (label === 'Search') return (
                     <li key="search-trigger"> 
                         <SearchCommand
-                            initialStocks={[]}
+                            initialStocks={initialStocks}
                             renderAs="text"
                             label="Search"
-
                         />
                     </li>
                 )

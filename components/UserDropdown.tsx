@@ -20,7 +20,7 @@ import NavItems from "@/components/NavItems";
 
 
 
-const UserDropdown = ({ user } : { user : User }) => {
+const UserDropdown = ({ user, initialStocks } : { user : User, initialStocks : StockWithWatchlistStatus[] }) => {
 
     const router = useRouter();
     //Handler session
@@ -79,7 +79,7 @@ const UserDropdown = ({ user } : { user : User }) => {
                </DropdownMenuItem>
                <DropdownMenuSeparator className="bg-gray-600 hidden sm:block" />
                <nav className="sm:hidden">
-                   <NavItems />
+                   <NavItems initialStocks={initialStocks} />
                </nav>
 
            </DropdownMenuContent>
