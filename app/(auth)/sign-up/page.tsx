@@ -76,7 +76,7 @@ const SignUp = () => {
                         name="email"
                         label="Email"
                         type="email"
-                        placeholder="example@gmail.com"
+                        placeholder="contact@FNL.com"
                         register={register}
                         error={errors.email}
                         validation={{ required: 'Email name is required', pattern: /^\w+@\w+\.\w+$/, message: 'Email address is required' }}
