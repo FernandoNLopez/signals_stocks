@@ -1,4 +1,5 @@
 "use client"
+// Client-side component: uses hooks, browser events and interactive UI
 
 import { useEffect, useState } from "react"
 import Link from "next/link";
@@ -11,16 +12,30 @@ import { CommandDialog, CommandEmpty, CommandInput, CommandList } from "@/compon
 import {Button} from "@/components/ui/button";
 
 
-
+/**
+ * SearchCommand
+ * --------------
+ * Command-style search dialog for stocks.
+ * Allows users to quickly search and navigate to stock detail pages.
+ * Supports keyboard shortcut (Cmd/Ctrl + K) and debounced API searching.
+ */
 export default function SearchCommand({ renderAs = 'button', label = 'Add stock', initialStocks }: SearchCommandProps) {
+    //Controls the visibility of the command dialog
     const [open, setOpen] = useState(false)
+    //Stores the current search input value
     const [searchTerm, setSearchTerm] = useState("")
+    //Indicates when an API request is in progress
     const [loading, setLoading] = useState(false)
+    //Holds the list of stocks to display --> Initially populated with predefined stocks
     const [stocks, setStocks] = useState<StockWithWatchlistStatus[]>(initialStocks);
 
+    //Determines whether the user is actively searching
     const isSearchMode = !!searchTerm.trim();
+    // Limits the number of displayed stocks when not searching
     const displayStocks = isSearchMode ? stocks : stocks?.slice(0, 10);
 
+
+    //Toggles the command dialog
     useEffect(() => {
         const onKeyDown = (e: KeyboardEvent) => {
             if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
@@ -32,6 +47,11 @@ export default function SearchCommand({ renderAs = 'button', label = 'Add stock'
         return () => window.removeEventListener("keydown", onKeyDown)
     }, [])
 
+    /**
+     * Executes the stock search
+     * - Resets to initial stocks if input is empty
+     * - Fetches filtered results from the API otherwise
+     */
     const handleSearch = async () => {
         if(!isSearchMode) return setStocks(initialStocks);
 
@@ -40,18 +60,21 @@ export default function SearchCommand({ renderAs = 'button', label = 'Add stock'
             const results = await searchStocks(searchTerm.trim());
             setStocks(results);
         } catch {
+            // Fallback to empty list on API error
             setStocks([])
         } finally {
             setLoading(false)
         }
     }
-
+    //Prevents excessive API calls while typing
     const debouncedSearch = useDebounce(handleSearch, 300);
 
+    //Triggers the debounced search whenever the input changes
     useEffect(() => {
         debouncedSearch();
     }, [searchTerm]);
 
+    //Resets search state after selecting a stock
     const handleSelectStock = () => {
         setOpen(false);
         setSearchTerm("");
@@ -60,6 +83,7 @@ export default function SearchCommand({ renderAs = 'button', label = 'Add stock'
 
     return (
         <>
+            {/* Trigger element (button or text) */}
             {renderAs === 'text' ? (
                 <span onClick={() => setOpen(true)} className="search-text">
             {label}
@@ -69,11 +93,14 @@ export default function SearchCommand({ renderAs = 'button', label = 'Add stock'
                     {label}
                 </Button>
             )}
+            {/* Command dialog container */}
             <CommandDialog open={open} onOpenChange={setOpen} className="search-dialog">
+                {/* Search input field */}
                 <div className="search-field">
                     <CommandInput value={searchTerm} onValueChange={setSearchTerm} placeholder="Search stocks..." className="search-input" />
                     {loading && <Loader2 className="search-loader" />}
                 </div>
+                {/* Results list */}
                 <CommandList className="search-list">
                     {loading ? (
                         <CommandEmpty className="search-list-empty">Loading stocks...</CommandEmpty>
@@ -83,10 +110,13 @@ export default function SearchCommand({ renderAs = 'button', label = 'Add stock'
                         </div>
                     ) : (
                         <ul>
+                            {/* Section label */}
                             <div className="search-count">
                                 {isSearchMode ? 'Search results' : 'Popular stocks'}
                                 {` `}({displayStocks?.length || 0})
                             </div>
+
+                            {/* Stock results */}
                             {displayStocks?.map((stock, i) => (
                                 <li key={stock.symbol} className="search-item">
                                     <Link
@@ -103,6 +133,7 @@ export default function SearchCommand({ renderAs = 'button', label = 'Add stock'
                                                 {stock.symbol} | {stock.exchange } | {stock.type}
                                             </div>
                                         </div>
+                                        {/* Watchlist indicator */}
                                         {<Star />}
                                     </Link>
                                 </li>

@@ -1,19 +1,37 @@
 'use client';
 
+
+// Next.js navigation
 import {useRouter} from "next/navigation";
+// Form handling & validation
 import { useForm } from 'react-hook-form';
+// User feedback / notifications
 import {toast} from "sonner";
 
+// Authentication server actions
 import {signInWithEmail} from "@/lib/actions/auth.actions";
 
+// Form components
 import { Button } from '@/components/ui/button';
 import InputField from '@/components/forms/InputField';
 import FooterLink from '@/components/forms/FooterLink';
 
 
-
+/**
+ * SignIn Page
+ * -----------
+ * Client-side authentication page.
+ * Handles user login using email and password and redirects the user on successful authentication.
+ */
 const SignIn = () => {
-    const router = useRouter()
+    //Next.js router used for post-login navigation
+    const router = useRouter();
+    /**
+     * React Hook Form configuration
+     * - Strongly typed with SignInFormData
+     * - Validation triggered on blur
+     * - Tracks submission state and errors
+     */
     const {
         register,
         handleSubmit,
@@ -25,7 +43,12 @@ const SignIn = () => {
         },
         mode: 'onBlur',
     });
-
+    /**
+     * Handles form submission
+     * - Calls the authentication server action
+     * - Redirects on success
+     * - Displays an error toast on failure
+     */
     const onSubmit = async (data: SignInFormData) => {
         try {
             const result = await signInWithEmail(data);

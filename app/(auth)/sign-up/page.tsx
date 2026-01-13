@@ -1,26 +1,43 @@
 'use client';
+// Client page: uses hooks, form state, navigation and server actions
 
+// React & Next.js core
 import React from 'react';
-import {useForm} from "react-hook-form";
 import {useRouter} from "next/navigation";
+// Form handling & validation
+import {useForm} from "react-hook-form";
+// User feedback / notifications
 import {toast} from "sonner";
 
+// Application constants (business rules / enums)
 import {INVESTMENT_GOALS, PREFERRED_INDUSTRIES, RISK_TOLERANCE_OPTIONS} from "@/lib/constants";
+// Authentication server actions
 import {signUpWithEmail} from "@/lib/actions/auth.actions";
-
+// UI component
 import {Button} from "@/components/ui/button";
+// Form components
 import InputField from "@/components/forms/InputField";
 import SelectField from "@/components/forms/SelectField";
 import { CountrySelectField } from "@/components/forms/CountrySelectField";
 import FooterLink from "@/components/forms/FooterLink";
 
-
-
-
+/**
+ * SignUp Page
+ * -----------
+ * Client-side page responsible for user registration.
+ * Collects personal and investment preference data and submits it through a server action.
+ */
 const SignUp = () => {
 
+    //Next.js router used for post-signup redirection
     const router = useRouter();
 
+    /**
+     * React Hook Form setup
+     * - Strongly typed using SignUpFormData
+     * - Validation triggered on blur
+     * - Default values aligned with business rules
+     */
     const {
         register,
         handleSubmit,
@@ -38,7 +55,12 @@ const SignUp = () => {
        }, mode: 'onBlur'
     }, );
 
-    //Submit the SignUp
+    /**
+     * Form submission handler
+     * - Sends form data to the authentication server action
+     * - Redirects user on success
+     * - Displays feedback on failure
+     */
     const onSubmit = async (data: SignUpFormData) => {
         try {
             //SignUp with email server action
@@ -58,11 +80,14 @@ const SignUp = () => {
     return (
         <>
             <div className="m-5">
+                {/* Page title */}
                 <h1 className="form-title">Sign Up & Personalize</h1>
+                {/* Registration form */}
                 <form
                     onSubmit={handleSubmit(onSubmit)}
                     className="space-y-6"
                 >
+                    {/* Basic account information */}
                     <InputField
                         name="fullName"
                         label="Full Name"
@@ -92,6 +117,7 @@ const SignUp = () => {
                         validation={{ required: 'Password is required', minLength: 8 }}
                     />
 
+                    {/* User location */}
                     <CountrySelectField
                         name="country"
                         label="Country"
@@ -130,11 +156,11 @@ const SignUp = () => {
                         error={errors.preferredIndustry}
                         required
                     />
-
+                    {/* Submit action */}
                     <Button type="submit" disabled={isSubmitting} className="yellow-btn w-full mt-5">
                         {isSubmitting ? 'Creating account' : 'Start your investing journey'}
                     </Button>
-
+                    {/* Redirect to sign-in */}
                     <FooterLink
                         text="Already have an account"
                         linkText="Sign in"
